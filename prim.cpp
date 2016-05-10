@@ -58,52 +58,56 @@ int main() {
 	int K;
 	int M;
 
-	cin >> N >> K >> M;
-
-	vector<vector<int>> adj(N);
-
-	//contiene[i] -> 0 = puerta cerrada, 1 = llave, 2 = nada
-	vector<int> contiene(N, 2);
-	// llave[i] = j -> la llave en el nodo i abre la puerta en el nodo j
-	vector<int> llaves(N, -1);
-
-	for (int i = 0; i < K; i++) {
-
-		int a, b;
-		cin >> a >> b;
-		a--;
-		b--;
-
-		contiene[a] = 1;
-		contiene[b] = 0;
-		llaves[a] = b;
-
-	}
-
-	for (int i = 0; i < M; i++) {
-
-		int n1;
-		int n2;
-		cin >> n1 >> n2;
-		n1--;
-		n2--;
-		adj[n1].push_back(n2);
-		adj[n2].push_back(n1);
-
-	}
-	//Va a guardar el estado del grafo antes de recorrerlo para comparar
-	vector<int> c_contiene;
-
-	while (c_contiene != contiene) {
-		if (bfsq(N, llaves, adj, contiene)) {
-			break;
+	while(cin >> N >> K >> M){
+		
+		if (N == -1) {
+			return 0;
 		}
-		c_contiene = contiene;
-	}
+		
+		vector<vector<int>> adj(N);
 
-	if (!bfsq(N, llaves, adj, contiene)) {
-		cout << 'N';
-	}
+		//contiene[i] -> 0 = puerta cerrada, 1 = llave, 2 = nada
+		vector<int> contiene(N, 2);
+		// llave[i] = j -> la llave en el nodo i abre la puerta en el nodo j
+		vector<int> llaves(N, -1);
 
+		for (int i = 0; i < K; i++) {
+
+			int a, b;
+			cin >> a >> b;
+			a--;
+			b--;
+
+			contiene[a] = 1;
+			contiene[b] = 0;
+			llaves[a] = b;
+
+		}
+
+		for (int i = 0; i < M; i++) {
+
+			int n1;
+			int n2;
+			cin >> n1 >> n2;
+			n1--;
+			n2--;
+			adj[n1].push_back(n2);
+			adj[n2].push_back(n1);
+
+		}
+		//Va a guardar el estado del grafo antes de recorrerlo para comparar
+		vector<int> c_contiene;
+
+		while (c_contiene != contiene) {
+			if (bfsq(N, llaves, adj, contiene)) {
+				break;
+			}
+			c_contiene = contiene;
+		}
+
+		if (!bfsq(N, llaves, adj, contiene)) {
+			cout << 'N';
+		}
+	}
 	return 0;
 }
