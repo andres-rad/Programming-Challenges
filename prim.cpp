@@ -1,7 +1,5 @@
 // prim.cpp : Defines the entry point for the console application.
 //
-
-#include "stdafx.h"
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -9,7 +7,7 @@
 
 using namespace std;
 
-bool bfsq(int N, const vector<int> &llaves, const vector<vector<int>> &adj, vector<int> &contiene) {
+bool bfsq(int N, const vector<int> &llaves, const vector<vector<int> > &adj, vector<int> &contiene) {
 
 	queue<int> bfsq;
 	vector<bool> visitado(N, false);
@@ -25,26 +23,28 @@ bool bfsq(int N, const vector<int> &llaves, const vector<vector<int>> &adj, vect
 
 			if (!visitado[adj[v][i]]) {
 
-				if (adj[v][i] == N-1) {
-					cout << 'Y' << endl;
-					return true;
-				}
-
 				if (contiene[adj[v][i]] == 1) {
-
+					if (adj[v][i] == N-1) {
+						cout << 'Y' << endl;
+						return true;
+					} else {
 						contiene[llaves[adj[v][i]]] = 2;
 						contiene[adj[v][i]] = 2;
 						bfsq.push(adj[v][i]);
 						visitado[adj[v][i]] = true;
 					}
-				} else (contiene[adj[v][i]] == 2) {
+				} else if(contiene[adj[v][i]] == 2) {
+						if (adj[v][i] == N-1) {
+							cout << 'Y' << endl;
+							return true;
+						} else {
 						bfsq.push(adj[v][i]);
 						visitado[adj[v][i]] = true;
+						}
 					}
 				}
 			}
 		}
-	}
 	return false;
 }
 
@@ -61,7 +61,7 @@ int main() {
 			return 0;
 		}
 
-		vector<vector<int>> adj(N);
+		vector<vector<int> > adj(N);
 
 		//contiene[i] -> 0 = puerta cerrada, 1 = llave, 2 = nada
 		vector<int> contiene(N, 2);
@@ -94,7 +94,7 @@ int main() {
 		}
 		//Va a guardar el estado del grafo antes de recorrerlo para comparar
 		vector<int> c_contiene;
-		bool progreso = false;
+		bool progreso;
 
 		while (c_contiene != contiene) {
 			c_contiene = contiene;
