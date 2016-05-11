@@ -10,14 +10,14 @@
 using namespace std;
 
 bool bfsq(int N, const vector<int> &llaves, const vector<vector<int>> &adj, vector<int> &contiene) {
-	
+
 	queue<int> bfsq;
 	vector<bool> visitado(N, false);
 	bfsq.push(0);
 	visitado[0] = true;
 
 	while (!bfsq.empty()) {
-		
+
 		int v = bfsq.front();
 		bfsq.pop();
 
@@ -25,22 +25,19 @@ bool bfsq(int N, const vector<int> &llaves, const vector<vector<int>> &adj, vect
 
 			if (!visitado[adj[v][i]]) {
 
+				if (adj[v][i] == N-1) {
+					cout << 'Y' << endl;
+					return true;
+				}
+
 				if (contiene[adj[v][i]] == 1) {
-					
-					if (adj[v][i] == N-1) {
-						cout << 'Y';
-						return true;
-					} else {
+
 						contiene[llaves[adj[v][i]]] = 2;
 						contiene[adj[v][i]] = 2;
 						bfsq.push(adj[v][i]);
 						visitado[adj[v][i]] = true;
 					}
-				} else if (contiene[adj[v][i]] == 2) {
-					if (adj[v][i] == N-1) { 
-						cout << 'Y';
-						return true;
-					} else {
+				} else (contiene[adj[v][i]] == 2) {
 						bfsq.push(adj[v][i]);
 						visitado[adj[v][i]] = true;
 					}
@@ -59,11 +56,11 @@ int main() {
 	int M;
 
 	while(cin >> N >> K >> M){
-		
+
 		if (N == -1) {
 			return 0;
 		}
-		
+
 		vector<vector<int>> adj(N);
 
 		//contiene[i] -> 0 = puerta cerrada, 1 = llave, 2 = nada
@@ -97,15 +94,17 @@ int main() {
 		}
 		//Va a guardar el estado del grafo antes de recorrerlo para comparar
 		vector<int> c_contiene;
-
+		bool progreso = false;
+		
 		while (c_contiene != contiene) {
-			if (bfsq(N, llaves, adj, contiene)) {
+			c_contiene = contiene;
+			progreso = bfsq(N, llaves, adj, contiene);
+			if (progreso) {
 				break;
 			}
-			c_contiene = contiene;
 		}
 
-		if (!bfsq(N, llaves, adj, contiene)) {
+		if (!progreso) {
 			cout << 'N';
 		}
 	}
