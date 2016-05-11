@@ -95,7 +95,7 @@ int main() {
 		//Va a guardar el estado del grafo antes de recorrerlo para comparar
 		vector<int> c_contiene;
 		bool progreso = false;
-		
+
 		while (c_contiene != contiene) {
 			c_contiene = contiene;
 			progreso = bfsq(N, llaves, adj, contiene);
@@ -105,7 +105,7 @@ int main() {
 		}
 
 		if (!progreso) {
-			cout << 'N';
+			cout << 'N' << endl;
 		}
 	}
 	return 0;
