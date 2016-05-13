@@ -1,7 +1,7 @@
 // prim.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -9,46 +9,54 @@
 
 using namespace std;
 
-bool bfsq(int N, const vector<int> &llaves, const vector<vector<int>> &adj, vector<int> &contiene) {
-	
+bool bfsq(int N, const vector<int> &llaves, const vector<vector<int> > &adj, vector<int> &contiene) {
+
 	queue<int> bfsq;
 	vector<bool> visitado(N, false);
 	bfsq.push(0);
 	visitado[0] = true;
 
+	bool ans=false;
+
 	while (!bfsq.empty()) {
-		
+
 		int v = bfsq.front();
 		bfsq.pop();
 
+
+
+
+
 		for (int i = 0; i < adj[v].size(); i++) {
+
+			if (adj[v][i] == N-1) ans=true;
 
 			if (!visitado[adj[v][i]]) {
 
 				if (contiene[adj[v][i]] == 1) {
-					
-					if (adj[v][i] == N-1) {
-						cout << 'Y';
-						return true;
-					} else {
+
 						contiene[llaves[adj[v][i]]] = 2;
 						contiene[adj[v][i]] = 2;
 						bfsq.push(adj[v][i]);
 						visitado[adj[v][i]] = true;
-					}
+
+						if (visitado[llaves[adj[v][i]]]){
+							bfsq.push(llaves[adj[v][i]]);
+							visitado[llaves[adj[v][i]]] = false;
+						}
+
 				} else if (contiene[adj[v][i]] == 2) {
-					if (adj[v][i] == N-1) { 
-						cout << 'Y';
-						return true;
-					} else {
+
 						bfsq.push(adj[v][i]);
 						visitado[adj[v][i]] = true;
-					}
+
+				} else if (contiene[adj[v][i]] == 0){
+						visitado[adj[v][i]] = true;
 				}
 			}
 		}
 	}
-	return false;
+	return ans;
 }
 
 
@@ -59,12 +67,12 @@ int main() {
 	int M;
 
 	while(cin >> N >> K >> M){
-		
+
 		if (N == -1) {
 			return 0;
 		}
-		
-		vector<vector<int>> adj(N);
+
+		vector<vector<int> > adj(N);
 
 		//contiene[i] -> 0 = puerta cerrada, 1 = llave, 2 = nada
 		vector<int> contiene(N, 2);
@@ -95,8 +103,16 @@ int main() {
 			adj[n2].push_back(n1);
 
 		}
+
+		if (bfsq(N, llaves, adj, contiene)){
+			cout<<"Y"<<endl;
+
+		}
+		else{
+			cout<<"N"<<endl;
+		}
 		//Va a guardar el estado del grafo antes de recorrerlo para comparar
-		vector<int> c_contiene;
+		/*vector<int> c_contiene;
 
 		while (c_contiene != contiene) {
 			if (bfsq(N, llaves, adj, contiene)) {
@@ -107,7 +123,7 @@ int main() {
 
 		if (!bfsq(N, llaves, adj, contiene)) {
 			cout << 'N';
-		}
+		}*/
 	}
 	return 0;
 }
