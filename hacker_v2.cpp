@@ -20,10 +20,10 @@ vector<pair <int, int> > prim( vector<vector<pair<int, int> > > ady, int N){
 
 	vector<pair<int, int> > arbol(N, mp(-1, -1));
 	vector<int> visitado(N, 0);
-	
-	//Esta parte de mierda estaría rompiendo todo, quiero una estructura de datos que sea < <peso12, nodo1>, nodo2> y ordenar por peso.
-	priority_queue( pair<pair<int,int> , int>, vector<pair<pair<int, int>, int > >, comparacion()) cola;
-	
+
+	//Esta parte de mierda estarï¿½a rompiendo todo, quiero una estructura de datos que sea < <peso12, nodo1>, nodo2> y ordenar por peso.
+	priority_queue( pair<pair<int,int> , int>, vector<pair<pair<int,int> , int> >, less<pair<pair<int,int> , int> >() cola;
+
 	arbol[0].first = -1;
 	arbol[0].second = 0;
 	visitado[0] = 1;
@@ -34,7 +34,7 @@ vector<pair <int, int> > prim( vector<vector<pair<int, int> > > ady, int N){
 	}
 
 	while(!cola.empty()){
-		
+
 		int current = cola.front().first.second;
 
 		if (!visitado[current]) {
@@ -47,7 +47,7 @@ vector<pair <int, int> > prim( vector<vector<pair<int, int> > > ady, int N){
 				cola.push( mp(ady[current][j], j) );
 			}
 		}
-		
+
 		cola.pop()
 
 	}
@@ -59,18 +59,18 @@ vector<pair <int, int> > prim( vector<vector<pair<int, int> > > ady, int N){
 
 
 void maximoPeso(int S, int T, vector<pair<int, int> > arbol){
-	
+
 	int maximo;
-	
+
 	while(arbol[S].first != arbol[T].first){
 		maximo = max(arbol[S].second, arbol[T].second);
 		S = arbol[S].first;
 		T = arbol[T].first;
 	}
-	
+
 	cout << maximo << ' ';
 	return;
-	
+
 }
 
 int main(){
@@ -96,9 +96,9 @@ int main(){
 
 
 		}
-	
+
 		vector<pair<int, int> > mst(prim(ady, C));
-		
+
 		for (int i = 0; i < H; i++){
 			int S, T;
 			cin >> S >> T;
@@ -113,4 +113,3 @@ int main(){
 
 	return 0;
 }
-
