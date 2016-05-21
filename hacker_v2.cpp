@@ -1,3 +1,4 @@
+// Example program
 #include <iostream>
 #include <algorithm>
 #include <queue>
@@ -5,24 +6,16 @@
 #include <functional>
 #include <utility>
 
-#define push_back pb
-#define make_pair mp
-
-
 using namespace std;
-
-bool comparacion( pair<pair<int, int>, int > a, pair<pair<int, int>, int > b){
-	return a.first.first > b.first.first;
-}
-
 
 vector<pair <int, int> > prim( vector<vector<pair<int, int> > > ady, int N){
 
-	vector<pair<int, int> > arbol(N, mp(-1, -1));
+  pair<int, int> init = make_pair(-1, -1);
+	vector<pair<int, int> > arbol(N, init);
 	vector<int> visitado(N, 0);
 
-	//Esta parte de mierda estar�a rompiendo todo, quiero una estructura de datos que sea < <peso12, nodo1>, nodo2> y ordenar por peso.
-	priority_queue( pair<pair<int,int> , int>, vector<pair<pair<int,int> , int> >, less<pair<pair<int,int> , int> >() cola;
+	//Esta parte de mierda estaria rompiendo todo, quiero una estructura de datos que sea < <peso12, nodo1>, nodo2> y ordenar por peso.
+	priority_queue < pair<pair<int,int> , int>, vector<pair<pair<int,int> , int> >, less<pair<pair<int,int> , int> >() > cola;
 
 	arbol[0].first = -1;
 	arbol[0].second = 0;
@@ -30,25 +23,25 @@ vector<pair <int, int> > prim( vector<vector<pair<int, int> > > ady, int N){
 
 	for (int i = 0; i < ady.size(); i++) {
 
-		cola.push(mp(ady[0][i], 0));
+		cola.push(make_pair(ady[0][i], 0));
 	}
 
 	while(!cola.empty()){
 
-		int current = cola.front().first.second;
+		int current = cola.top().first.second;
 
 		if (!visitado[current]) {
 
-			arbol[current].second() = cola.front().second;
-			arbol[current].first()  = cola.front().first.first;
+			arbol[current].second = cola.top().second;
+			arbol[current].first  = cola.top().first.first;
 			visitado[current] = 1;
 
-			for (int j = 0; j < ady[current].size(); i++){
-				cola.push( mp(ady[current][j], j) );
+			for (int j = 0; j < ady[current].size(); j++){
+				cola.push( make_pair(ady[current][j], j) );
 			}
 		}
 
-		cola.pop()
+		cola.pop();
 
 	}
 
@@ -91,8 +84,8 @@ int main(){
 			int A, B, V;
 			cin >> A >> B >> V;
 
-			ady[A].pb(mp(V, B));
-			ady[B].pb(mp(V, A));
+			ady[A].push_back(make_pair(V, B));
+			ady[B].push_back(make_pair(V, A));
 
 
 		}
