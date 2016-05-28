@@ -22,7 +22,7 @@ int main(){
     cat.push_back(make_pair(px, py));
     fs.push_back(0);
     dist.push_back(0);
-    visitado.push_back(true)
+    visitado.push_back(true);
     int cx, cy, f;
 
     for(int i = 0; i < n; i++){
