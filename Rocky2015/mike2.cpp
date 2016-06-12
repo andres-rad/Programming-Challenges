@@ -35,7 +35,7 @@ int main () {
 		int n;
 		cin>>n;
 
-		ini(2*n+1);
+		ini(2*n+10);
 
 		/*
 		if(n==0){
@@ -44,8 +44,9 @@ int main () {
 		else{} */
 		// n es mayor igual a 1
 
-		vector<int> cuenta(n+2,0);
-		vector<int> tam(2*n+1,1);
+		vector<int> cuenta(2*n+20,0);
+		vector<int> tam(2*n+10,1);
+
 		int maxi=0;
 		forn (i,n){
 			cin>>p>>q;
