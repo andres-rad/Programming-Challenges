@@ -23,17 +23,22 @@ using namespace std;
 typedef long long int tint;
 
 vector<int> clases;
+vector<int> minimos;
+vector<int> cantidad;
+vector<int> altura;
 
-int cantcomp;
-vector<set<int> > componentes;
 
 void init(){
 	clases.clear();
 	clases.insert(clases.begin(), 100000, -1);
-	cantcomp=100000;
 	
-	componentes.clear();
-	componentes.insert(componentes.begin(), 100000, set<int>);
+	minimos.clear();
+	minimos.insert(minimos.begin(), 100000, 0);
+	
+	cantidad.clear();
+	cantidad.insert(cantidad.begin(), 100000, 1);
+	
+	
 	
 	return;
 }
@@ -42,18 +47,11 @@ int cl(int h){
 	return (clases[h]==-1? h : clases[h]=cl(clases[h]));
 }
 
-void join (int i1, int j1, int i2, int j2){
+int join (int i1, int j1, int i2, int j2){
+	int res=0;
 	if (cl(hashi(i1, j1))!=cl(hashi(i2, j2))){
-		cantcomp--;
-		if (componentes[cl(hashi(i1, j1))].size() <componentes[cl(hashi(i2, j2))].size()){
-			clases[cl(hashi(i1, j1))]=cl(hashi(i2, j2));
-			componentes[cl(hashi(i2, j2))].insert(componentes[cl(hashi(i1, j1))].begin(), componentes[cl(hashi(i1, j1))].end());
-			componentes[cl(hashi(i1, j1))].clear();
-		}else {
-			clases[cl(hashi(i2, j2))]=cl(hashi(i1, j1));
-			componentes[cl(hashi(i1, j1))].insert(componentes[cl(hashi(i2, j2))].begin(), componentes[cl(hashi(i2, j2))].end());
-			componentes[cl(hashi(i2, j2))].clear();
-		}
+		clases[cl(hashi(i1, j1))]=cl(hashi(i2, j2));
+		
 	}
 	return;
 }
@@ -72,15 +70,15 @@ void dfs(vector<vector<int> > & campo, int i, int j){
 	
 	vis[i][j]=1;
 	
-	forn (h, 4){
+	forn (l, 4){
 		
 		
-		if ( i+movs[h].first!=-1 && j+movs[h].second!=-1 &&  i+movs[h].first<w && j+movs[h].second<h && 
-			!vis[i+movs[h].first][j+movs[h].second] && campo[i][j]<=campo[i+movs[h].first][j+movs[h].second]) {
+		if ( i+movs[l].first!=-1 && j+movs[l].second!=-1 &&  i+movs[l].first<w && j+movs[l].second<h && 
+			!vis[i+movs[l].first][j+movs[l].second] && campo[i][j]<=campo[i+movs[l].first][j+movs[l].second]) {
 				
 			// seguir aca
-			join(i,j,i+movs[h].first,j+movs[h].second);
-			dfs (campo,i+movs[h].first,j+movs[h].second);
+			join(i,j,i+movs[l].first,j+movs[l].second);
+			dfs (campo,i+movs[l].first,j+movs[l].second);
 			
 			
 		}
@@ -135,33 +133,31 @@ int main(){
 	
 	int res=0;
 	
-	int j=0;
 	int altura;
 	
-	while (j<orden.size()){
-		altura= orden[j].first;
-		
-		int x=orden[j].second.first, y=orden[j].second.second;
-		j++;
-		
-		forn (h, 4){
+	for (int i=1; i<h-1; i++){
+		for (int j=1; j<w; j++){
 			
-			if ( i+movs[h].first!=-1 && j+movs[h].second!=-1 &&  i+movs[h].first<w && j+movs[h].second<h && 
-				!vis[i+movs[h].first][j+movs[h].second] && campo[i][j]<=campo[i+movs[h].first][j+movs[h].second]) {
+			forn (l, 4){
+		
+		
+			if ( i+movs[l].first!=-1 && j+movs[l].second!=-1 &&  
+				i+movs[l].first<w && j+movs[l].second<h && 
+				!vis[i+movs[l].first][j+movs[l].second] && 
+				campo[i][j]<=campo[i+movs[l].first][j+movs[l].second]) {
+						
+					// seguir aca
+					join(i,j,i+movs[l].first,j+movs[l].second);
+					dfs (campo,i+movs[l].first,j+movs[l].second);
 					
-				// seguir aca
-				join(i,j,i+movs[h].first,j+movs[h].second);
-				dfs (campo,i+movs[h].first,j+movs[h].second);
+					
+				}
 				
 				
 			}
 			
 			
 		}
-			
-			
-		}
-		
 	}
 			
 			
