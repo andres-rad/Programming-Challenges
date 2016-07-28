@@ -1,0 +1,12 @@
+A-A
+B-A
+C-A
+D-A
+E-A
+F- (2SAT)
+G-
+H-
+I-A
+J-
+K-
+L- (Big Numbers)
