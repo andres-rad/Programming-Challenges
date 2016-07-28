@@ -24,29 +24,21 @@ using namespace std;
 
 typedef long long int tint;
 
-
-
-
+int agujeros(char c){
+	if(c == 'B'){
+		return 2;
+	} else if (c == 'A' || c == 'D' || c == 'O' || c == 'P' || c == 'Q' || c == 'R') { 
+		return 1; 
+		}
+	return 0;
+}
 
 int main(){
-	
-	int l, n;
-	cin>>l>>n;
-	
-	vector<int> toneles;
-	
-	forn (i,n){
-		int a;
-		cin>>a;
-		toneles.pb(a);
-		
+	char letra;
+	int regiones = 0;
+	while(cin >> letra){
+		regiones += agujeros(letra);
 	}
-	
-	set<int> primerospasos;
-	
-	int movs=0;
-	
-	forn (
-	
+	cout << regiones << endl;
 	return 0;
 }

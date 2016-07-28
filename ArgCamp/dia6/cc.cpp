@@ -46,7 +46,24 @@ int main(){
 	
 	int movs=0;
 	
-	forn (
+	int flag=toneles[0];
+	int prpaso=0;
+	forn (i,n-1){
+		if ( flag+toneles[i+1]<=l){
+			
+			flag+=toneles[i+1];
+		}else{
+			prpaso=i+1;
+			flag= toneles[i+1];
+		}
+	}
+	
+	
+	forn (i, primerospasos.size()){
+		cout<<*primerospasos.begin()<<endl;
+		primerospasos.eras(primerospasos.begin());
+	}
+	
 	
 	return 0;
 }

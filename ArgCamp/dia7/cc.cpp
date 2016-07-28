@@ -46,7 +46,30 @@ int main(){
 	
 	int movs=0;
 	
-	forn (
+	int flag=0;
+	int prpaso=0;
+	forn (i,n){
+		if ( flag+toneles[i]<=l){
+			if (!flag) primerospasos.insert(i);
+			flag+=toneles[i];
+		}else{
+			prpaso=i+1;
+			//primerospasos.insert(i+1);
+			flag= toneles[i];
+		}
+	}
+	
+	/*
+	 * 3 8 2 4 5 
+	 * optimo: 2+4+5
+	 * 
+	
+	
+	forn (i, primerospasos.size()){
+		cout<<*primerospasos.begin()<<endl;
+		primerospasos.erase(primerospasos.begin());
+	}
+	
 	
 	return 0;
 }

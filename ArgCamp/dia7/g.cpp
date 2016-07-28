@@ -25,28 +25,28 @@ using namespace std;
 typedef long long int tint;
 
 
-
-
-
 int main(){
+	cin.tie(NULL);
+	ios::sync_with_stdio(false);
 	
-	int l, n;
-	cin>>l>>n;
-	
-	vector<int> toneles;
-	
-	forn (i,n){
-		int a;
-		cin>>a;
-		toneles.pb(a);
+	int casos;
+	cin>>casos;
+	while (casos>0){
+		casos--;
 		
+		tint ceros, unos;
+		cin>>ceros>>unos;
+		
+		tint res= ceros*ceros;
+		if (unos%2==0){
+			res-= 2*((unos/2)*(unos/2));
+		}else{
+			res-= ((unos/2)*(unos/2))+(((unos+1)/2)*((unos+1)/2));
+		}
+		
+		cout<<res<<'\n';
 	}
 	
-	set<int> primerospasos;
-	
-	int movs=0;
-	
-	forn (
 	
 	return 0;
 }
