@@ -3,10 +3,10 @@ B-A
 C-A
 D-A
 E-A
-F- (2SAT)
-G-
+F-(2SAT)
+G-A (Bellman-Ford)
 H-
 I-A
 J-
 K-
-L- (Big Numbers)
+L-(Big Numbers) Todavia es muy lento
