@@ -28,40 +28,39 @@ typedef pair<int,int> ii;
 const int MAXN=100100;
 int n;
 
-int main() {
-	int n,m;
-    while(cin >>m>> n){
-
-		vector<vector<int> > res (204, vector<int> (204,0));
-
-		forr (i,1,201){
-			forr(j,0,i+1){
-				//cout<<i-j<<' '<<j<<endl;
-				if (j!=0 && j!=i){
-					res[i-j][j]= max(res[max(0,i-j-2)][j+1], res[i-j+1][max(0,j-2)])+1;
-				}
-				//res[min(max(1,i-j),100)][min(max(1,j),100)]= max(res[min(100,i-j+1)][max(min(100,j-2),0)], res[max(min(100,i-j-2),0)][min(100,j+1)]) +1;
+int lnds(vector<int> &a){
+	vector<int> longest (a.size(), 1);
+	int ans=1;
+	forr (i,1,n){
+		forn(j,i){
+			if (a[j]<=a[i]){
+				//dprint(i);dprint(j);
+				longest[i]=max(longest[i], longest[j]+1);
 			}
+		}
+		ans=max(ans, longest[i]);
+	}
+	
+	return ans;
+}
+int main() {
+	
+    while(cin >> n){
+		int m;
+		cin>>m;
+		
+		vector<int> tipos;
+		
+		forn (i,n){
+			int a;
+			double b;
+			cin>>a>>b;
+			tipos.pb(a);
 		}
 		
-/*
-		forn (i,101){
-			forn (j,101){
-				cout<<res[i][j]<<' ';
-			}
-			cout<<endl;
-		}
-
-		cout<<endl<<endl;
-		*/
-
-		res[1][1]=0;
-		cout<<res[n][m]<<endl;
-
-
-
-
-    }
+		
+		cout<<n-lnds(tipos)<<endl;
+	}
 
     return 0;
 }

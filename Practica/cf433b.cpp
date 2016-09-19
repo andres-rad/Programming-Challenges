@@ -29,34 +29,45 @@ const int MAXN=100100;
 int n;
 
 int main() {
-	int n,m;
-    while(cin >>m>> n){
-
-		vector<vector<int> > res (204, vector<int> (204,0));
-
-		forr (i,1,201){
-			forr(j,0,i+1){
-				//cout<<i-j<<' '<<j<<endl;
-				if (j!=0 && j!=i){
-					res[i-j][j]= max(res[max(0,i-j-2)][j+1], res[i-j+1][max(0,j-2)])+1;
-				}
-				//res[min(max(1,i-j),100)][min(max(1,j),100)]= max(res[min(100,i-j+1)][max(min(100,j-2),0)], res[max(min(100,i-j-2),0)][min(100,j+1)]) +1;
-			}
+	int n;
+    while(cin >> n){
+		vector<tint> normal;
+		vector<tint> ordenados;
+		normal.pb(0); ordenados.pb(0);
+		
+		forn(i,n){
+			int t;
+			cin>>t;
+			ordenados.pb(t);
+			
+			normal.pb(t+normal[normal.size()-1]);
 		}
 		
-/*
-		forn (i,101){
-			forn (j,101){
-				cout<<res[i][j]<<' ';
-			}
-			cout<<endl;
+		sort(ordenados.begin(), ordenados.end());
+		
+		forr (i,1,n+1){
+			ordenados[i]=ordenados[i]+ordenados[i-1];
 		}
-
-		cout<<endl<<endl;
-		*/
-
-		res[1][1]=0;
-		cout<<res[n][m]<<endl;
+		
+		int m;
+		cin>>m;
+		
+		forn (i,m){
+			int t;
+			cin>>t;
+			int l ,r;
+			cin>>l>>r;
+			
+			if (t==1){
+				cout<<normal[r]-normal[l-1]<<endl;
+				
+			}else{
+				cout<<ordenados[r]-ordenados[l-1]<<endl;
+				
+			}
+		}
+			
+		
 
 
 
