@@ -24,20 +24,40 @@ using namespace std;
 typedef pair<int,int> par;
 typedef long long int tint;
 
+struct res{
+	set<int> nums;
+	vector<int> numseq;
+	int ans;
+}
+
+res fun(const res& a, const res& b){
+	res ans;
+	set_union(a.nums.begin(), a.nums.end(),
+                   b.nums.begin(), b.nums.end(),                  
+                   back_inserter(ans.nums));
+    merge(a.numseq.begin(), a.numseq.end(),
+                   b.numseq.begin(), b.numseq.end(),                  
+                   back_inserter(ans.numseq));
+                   
+    
+    
+}
+
 struct RMQ{
-	#define LVL 23
-	tint vec[LVL][1<<(LVL+1)];
-	tint &operator[](int p){return vec[0][p];}
-	tint get(int i, int j) {//intervalo [i,j)
+	#define LVL 10 // LVL ≥ ceil(logn)
+	res vec[LVL][1<<(LVL+1)];
+	
+	res &operator[](int p){return vec[0][p];}
+	
+	res get(int i, int j) {//intervalo [i,j)
 		int p = 31-__builtin_clz(j-i);
-		//return min(vec[p][i],vec[p][j-(1<<p)]);
-		return (vec[p][i] ^ vec[p][j-(1<<p)]);
+		return min(vec[p][i],vec[p][j-(1<<p)]);
 	}
+	
 	void build(int n) {//O(nlogn)
 		int mp = 31-__builtin_clz(n);
 		forn(p, mp) forn(x, n-(1<<p))
-			//vec[p+1][x] = min(vec[p][x], vec[p][x+(1<<p)]);
-			vec[p+1][x]= vec[p][x]^ vec[p][x+(1<<p)];
+		vec[p+1][x] = min(vec[p][x], vec[p][x+(1<<p)]);
 	}
 };
 
