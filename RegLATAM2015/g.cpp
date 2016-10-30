@@ -1,72 +1,91 @@
 #include <bits/stdc++.h>
-using namespace std;
 
-#define forsn(i,s,n) for(int i=s; i<n; i++)
-#define forn(i,n) forsn(i,0,n)
+#define forn(i,n) for(int i = 0; i < n; i++)
+#define forsn(i,s,n) for(int i = s; i < n; i++)
 #define pb push_back
-#define TMAX 1440.0
-#define INF 1e9
-#define MAX_V 250001
-#define add(a,b,w) G[a].pb(make_pair(w,b))
+#define mp make_pair
+#define INF 1e10
+using namespace std;
+int t = 0;
 
-double t = 0;
+struct flineal{
+    double A;
+    double B;
 
-struct recta{
-	int m;
-	int b;
+    double evaluar(double tiempo){
+        return A*tiempo + B;
+    }
 
-	double evaluar(double t){
-		return m*t + b;
-	}
+    bool operator<(flineal &f){
+        return evaluar(t) < f.evaluar(t);
+    }
+    bool operator>(flineal &f){
+        return evaluar(t) > f.evaluar(t);
+    }
+};
 
-	bool operator<(recta &a){
-		return evaluar(t) < a.evaluar(t);
-	}
+
+
+double costoMinimo(vector<vector<pair<flineal, int> > > g, double tiempo){
+    priority_queue<pair<double, int>, vector<pair<double, int> > > Q;
+    vector<double> peso(g.size()+100, INF);
+    peso[0] = 0.0;
+    Q.push({peso[0], 0});
+    while(!Q.empty()){
+        pair<double,int> actual = Q.top(); Q.pop();
+        if(actual.second == g.size()) break;
+        for(auto it = g[actual.second].begin(); it != g[actual.second].end(); it++){
+            if(peso[actual.second] + (it->first).evaluar(t) < peso[it->second]){
+                peso[it->second] = peso[actual.second] + (it->first).evaluar(t);
+                Q.push(mp(peso[it->second], it->second));
+            }
+        }
+    }
+    return peso[g.size()-1];
 }
 
-double minCosto(d){
-	priority_queue<pair<double, int>, vector<pair<double, int> > > Q;
-	vector<double> dist(N, INF); vector<int> dad(N, -1);
-	Q.push(make_pair(0, s)); dist[i];
-	while(!Q.empty()){
-		pair<double, int> p = Q.top(); Q.pop();
-		if p.snd == tiempo
-	}  
-}
+int main(){
+    cout << fixed;
+    cout << setprecision(5);
+    int n,m;
+    double TMAX = 1440.0;
+    while(cin >> n){
+        cin >> m;
+        vector<vector<pair<flineal, int> > > g(n);
+        forn(k, m){
+            int i,j;
+            double a,b;
+            cin >> i >> j >> a >> b;
+            flineal aux = {a, b};
+            g[i-1].pb({aux, j-1});
+            g[j-1].pb({aux, i-1});
+        }
 
+        double v0 = 0;
+        double v1 = TMAX/3.0;
+        double v2 = (TMAX/3.0)*2;
+        double v3 = TMAX;
+        double res = 0;
+        while(v3 - v0 > 1e-7){
+            cout << "v0: " <<  v0 << "  v1: "<< v1 << "  v2: " << v2 << "  v3: " << v3 << endl;
+            double res1, res2;
 
-int main() {
-	int n, m;
-	while(cin >> n){
-		cin >> m;
-		vector<vector<pair< int, recta> > g(n);
-		forn(k, m){
-			int i,j,a,b;
-			cin >> i >> j >> a >> b;
-			double v1 = 0;
-			double v2 = TMAX / 3;
-			double v3 = 2* v2;
-			double v4 = TMAX;
-			double res0 = 0;
-			while(v4 - v1 < 10e-8){
-				t=v1;
-				double res1 = minCosto(1, n);
-				t=v2;
-				double res2 = minCosto(1, n);
-				t=v3;
-				double res3 = minCosto(1, n);
-				if(res2 > res1 && res3 > res2){
-					v1 = v2;
-				} else {
-					v4 = v3;
-				}
-				v2 = v4/3;
-				v3 = 2*v2;
+            t = v0;
+            res = costoMinimo(g, v0);
+            t = v1;
+            res1 = costoMinimo(g, v1);
+            t = v2;
+            res2 = costoMinimo(g, v2);
 
-
-			}
-			cout << res0 << endl;
-		}
-	}
-	return 0;
+            if(res1 > res && res2 > res1){
+                v0 = v1;
+            } else {
+                v3 = v2;
+            }
+            v1 = (v3-v0)/3.0 + v0;
+            v2 = 2*(v3-v0)/3.0 + v0;
+        }
+        cout << res << '\n';
+    }
+    return 0;
 }
