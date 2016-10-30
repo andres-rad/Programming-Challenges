@@ -6,7 +6,6 @@
 #define mp make_pair
 #define INF 1e10
 using namespace std;
-double t = 0;
 
 struct flineal{
     double A;
@@ -15,28 +14,21 @@ struct flineal{
     double evaluar(double tiempo){
         return A*tiempo + B;
     }
-
-    bool operator<(flineal &f){
-        return evaluar(t) < f.evaluar(t);
-    }
-    bool operator>(flineal &f){
-        return evaluar(t) > f.evaluar(t);
-    }
 };
 
 
 
 double costoMinimo(vector<vector<pair<flineal, int> > > g, double tiempo){
     priority_queue<pair<double, int>, vector<pair<double, int> > > Q;
-    vector<double> peso(g.size()+100, INF);
+    vector<double> peso(g.size()+10, INF);
     peso[0] = 0.0;
     Q.push({peso[0], 0});
     while(!Q.empty()){
         pair<double,int> actual = Q.top(); Q.pop();
         if(actual.second == g.size()) break;
         for(auto it = g[actual.second].begin(); it != g[actual.second].end(); it++){
-            if(peso[actual.second] + (it->first).evaluar(t) < peso[it->second]){
-                peso[it->second] = peso[actual.second] + (it->first).evaluar(t);
+            if(peso[actual.second] + (it->first).evaluar(tiempo) < peso[it->second]){
+                peso[it->second] = peso[actual.second] + (it->first).evaluar(tiempo);
                 Q.push(mp(peso[it->second], it->second));
             }
         }
@@ -66,14 +58,12 @@ int main(){
         double v2 = (TMAX/3.0)*2;
         double v3 = TMAX;
         double res = 0;
+
         while(v3 - v0 > 1e-6){
             double res1, res2;
 
-            t = v0;
             res = costoMinimo(g, v0);
-            t = v1;
             res1 = costoMinimo(g, v1);
-            t = v2;
             res2 = costoMinimo(g, v2);
 
             if(res1 > res && res2 > res1){
