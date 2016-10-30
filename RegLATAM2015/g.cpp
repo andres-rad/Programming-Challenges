@@ -6,7 +6,7 @@
 #define mp make_pair
 #define INF 1e10
 using namespace std;
-int t = 0;
+double t = 0;
 
 struct flineal{
     double A;
@@ -66,8 +66,7 @@ int main(){
         double v2 = (TMAX/3.0)*2;
         double v3 = TMAX;
         double res = 0;
-        while(v3 - v0 > 1e-7){
-            cout << "v0: " <<  v0 << "  v1: "<< v1 << "  v2: " << v2 << "  v3: " << v3 << endl;
+        while(v3 - v0 > 1e-6){
             double res1, res2;
 
             t = v0;
