@@ -1,4 +1,8 @@
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+#include<vector>
+#include<iostream>
+#include<iomanip>
+#include<queue>
 
 #define forn(i,n) for(int i = 0; i < n; i++)
 #define forsn(i,s,n) for(int i = s; i < n; i++)
@@ -14,24 +18,30 @@ struct flineal{
     double evaluar(double tiempo){
         return A*tiempo + B;
     }
+    double evaluar(double tiempo) const{
+        return A*tiempo + B;
+    }
 };
 
 
 
-double costoMinimo(vector<vector<pair<flineal, int> > > g, double tiempo){
-    priority_queue<pair<double, int>, vector<pair<double, int> > > Q;
+double costoMinimo(const vector<vector<pair<flineal, int> > > & g, const double & tiempo){
+    priority_queue<pair<double, int> > Q;
     vector<double> peso(g.size()+10, INF);
+    vector<bool> vis(g.size()+10, false);
     peso[0] = 0.0;
     Q.push({peso[0], 0});
-    while(!Q.empty()){
+    while(!Q.empty() ){
         pair<double,int> actual = Q.top(); Q.pop();
-        if(actual.second == g.size()) break;
+        vis[actual.second]=true;
+
         for(auto it = g[actual.second].begin(); it != g[actual.second].end(); it++){
-            if(peso[actual.second] + (it->first).evaluar(tiempo) < peso[it->second]){
+            if(peso[actual.second] + (it->first).evaluar(tiempo) < peso[it->second] - 1e-8){
                 peso[it->second] = peso[actual.second] + (it->first).evaluar(tiempo);
                 Q.push(mp(peso[it->second], it->second));
             }
         }
+        //if(actual.second == g.size()) break;
     }
     return peso[g.size()-1];
 }
@@ -39,6 +49,8 @@ double costoMinimo(vector<vector<pair<flineal, int> > > g, double tiempo){
 int main(){
     cout << fixed;
     cout << setprecision(5);
+    cin.tie(NULL);
+    ios::sync_with_stdio(false);
     int n,m;
     double TMAX = 1440.0;
     while(cin >> n){
@@ -57,24 +69,27 @@ int main(){
         double v1 = TMAX/3.0;
         double v2 = (TMAX/3.0)*2;
         double v3 = TMAX;
-        double res = 0;
+        double res = 0.0;
 
-        while(v3 - v0 > 1e-6){
-            double res1, res2;
+        int iterations=0;
 
-            res = costoMinimo(g, v0);
-            res1 = costoMinimo(g, v1);
-            res2 = costoMinimo(g, v2);
+        while(v3 - v0 > 1e-7 && iterations < 70){
+            double res1;
 
-            if(res1 > res && res2 > res1){
+            res = costoMinimo(g, v1);
+            res1 = costoMinimo(g, v2);
+            //res2 = costoMinimo(g, v2);
+
+            if(res1 > res ){
                 v0 = v1;
             } else {
                 v3 = v2;
             }
             v1 = (v3-v0)/3.0 + v0;
             v2 = 2*(v3-v0)/3.0 + v0;
+            iterations++;
         }
-        cout << res << '\n';
+        cout << res << endl;
     }
     return 0;
 }
