@@ -26,7 +26,7 @@ struct flineal{
 
 
 double costoMinimo(const vector<vector<pair<flineal, int> > > & g, const double & tiempo){
-    priority_queue<pair<double, int> > Q;
+    priority_queue<pair<double, int>, vector<pair<double, int> >, greater<pair<double, int > > > Q;
     vector<double> peso(g.size()+10, INF);
     vector<bool> vis(g.size()+10, false);
     peso[0] = 0.0;
