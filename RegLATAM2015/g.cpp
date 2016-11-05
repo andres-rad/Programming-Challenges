@@ -81,17 +81,18 @@ double costoMinimo(const vector<vector<pair<flineal, int> > > & g, const double 
     while(!Q.empty() ){
         pair<double,int> actual = Q.top(); Q.pop();
         //if (vis[actual.second]) continue;
-        vis[actual.second]=true;
 
 
-        for(auto it = g[actual.second].begin(); it != g[actual.second].end(); it++){
+        for(auto it = g[actual.second].begin(); !vis[actual.second] && it != g[actual.second].end(); it++){
             cnt++;
             if(peso[actual.second] + (it->first).evaluar(tiempo) < peso[it->second] - 1e-8){
                 peso[it->second] = peso[actual.second] + (it->first).evaluar(tiempo);
                 Q.push(mp(peso[it->second], it->second));
             }
         }
-        //if(actual.second == g.size()) break;
+        vis[actual.second]=true;
+
+        if(actual.second == g.size()-1) break;
     }
     return peso[g.size()-1];
 }
@@ -126,15 +127,15 @@ int main(){
 
         int iterations=0;
 
-        while(v3 - v0 > 1e-10 && iterations < 120){
+        while(v3 - v0 > 1e-12 && iterations < 120){
             double res1;
             cnt=0;
-            //res = costoMinimo(g, v1);
-            res = cMTeo(g, v1);
+            res = costoMinimo(g, v1);
+            //res = cMTeo(g, v1);
             cerr<<cnt<<endl;
             cnt=0;
-            res1 = cMTeo(g, v2);
-            //res1 = costoMinimo(g, v2);
+            //res1 = cMTeo(g, v2);
+            res1 = costoMinimo(g, v2);
             cerr<<cnt<<endl;
             //res2 = costoMinimo(g, v2);
 
