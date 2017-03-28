@@ -23,6 +23,7 @@ bool (f(int copias, int segundos,int maq)){
 		if (lista[i]<=segundos){
 			ans+=(segundos-lista[i])/t[i];
 		}
+		cout<<"bb "<<i<<" "<<ans<<endl;
 	}
 
 	return (ans>=copias);
@@ -70,6 +71,12 @@ int main () {
 		lista[i]=hi;
 	}
 
+	forn (i,n){
+		cout<<i<<" "<<lista[i]<<endl;
+	}
+
+	cout<<f(queries[0], 7, n)<<endl;
+
 	forn (i,m){
 		long long int hi=1000000000, lo=0, copias=queries[i];
 
@@ -84,6 +91,8 @@ int main () {
 		cout<<hi<<endl;
 		//lista[i]=lo;
 	}
+
+
 
 	return 0;
 }
