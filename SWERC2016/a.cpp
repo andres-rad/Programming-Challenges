@@ -136,13 +136,48 @@ int main() {
   int n;
   while(cin>>n){
     vector<int> l (n);
+		vector<int> sumas (n);
     int x,y;
 
     forn(i,n){
       cin>>l[i];
 
     }
+
+		dforn(i,n){
+			if (i) sumas[i-1]=sumas[i]+l[i];
+		}
+
     cin>>x>>y;
+
+
+
+		vector<pto> res (n);
+
+		pto target, org;
+		target.x=x;
+		target.y=y;
+		org.x=org.y=0.0;
+
+
+		forn(i,n){
+			Circle inner;
+			inner.o=org;
+			inner.r=l[i];
+
+			Circle outer;
+			outer.o=target;
+			outer.r=sumas[i];
+
+			auto inter=interCC(inner, outer).fst;
+
+			res[i]=inter;
+
+			org=inter;
+
+		}
+
+		/*
     vector<pair<int, int> > radios (n);
     radios[0].fst=l[0];
     radios[0].second=l[0];
@@ -152,7 +187,7 @@ int main() {
       if (l[i]<radios[i-1].fst){
         radios[i].fst=radios[i-1].fst - l[i];
       }else if(l[i]>radios[i-1].snd){
-        radios[i].fst= - radios[i-1].snd + l[i];
+        radios[i].fst= l[i] - radios[i-1].snd;
       }else{
         radios[i].fst=0;
       }
@@ -258,6 +293,7 @@ int main() {
 			if (i) limite.r=radios[i-1].fst;
 
 		}
+		*/
 
 		forn(i,n){
 			cout<<setprecision(3)<<fixed<<res[i].x<<' '<<res[i].y<<endl;
