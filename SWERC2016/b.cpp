@@ -68,6 +68,17 @@ int main() {
 			y-=rY;
 			pto p = {x,y};
 
+			if(x<0 && y>0) {
+				add.pb(p);
+			} else if(x>0 && y<0) {
+				del.pb(p);
+			} else if(y>=0 && x >=0) {
+				upper++;
+			} else {
+				lower++;
+			}
+
+			/*
 			if(x>0 && y>0) {
 				upper++;
 			} else if(x<0 && y<0) {
@@ -77,6 +88,7 @@ int main() {
 			} else {
 				add.pb(p);
 			}
+			*/
 		}
 		sort(add.begin(), add.end());
 		sort(del.begin(), del.end());
