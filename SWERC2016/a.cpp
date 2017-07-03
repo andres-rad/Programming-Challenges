@@ -11,6 +11,8 @@ using namespace std;
 #define fst first
 #define snd second
 #define INF 1e9
+#define debug(v) cerr<< #v << ": " << (v) <<endl;
+#define min(a,b) (a<b ? a : b)
 typedef long long ll;
 typedef pair<int,int> ii;
 typedef double tipo;
@@ -20,6 +22,7 @@ const int MAXN=100100;
 ///punto
 
 const double EPS=1e-9;
+const double EPSFA = 1e-4;
 struct pto{
 	double x, y;
 	pto(double x=0, double y=0):x(x),y(y){}
@@ -99,7 +102,20 @@ bool circle2PtsRad(pto p1, pto p2, double r, pto &c){
 #define sqr(a) ((a)*(a))
 #define feq(a,b) (fabs((a)-(b))<EPS)
 pair<tipo, tipo> ecCuad(tipo a, tipo b, tipo c){//a*x*x+b*x+c=0
-	tipo dx = sqrt(b*b-4.0*a*c);
+  tipo dx;
+	tipo maxi = max(fabs(a), max( fabs(b), fabs(c)));
+	debug(a);
+	debug(b);
+	debug(c);
+	debug(maxi);
+	a/=maxi;
+	b/=maxi;
+	c/=maxi;
+	if(fabs(b*b - 4.0 * a * c) < EPSFA) dx=0;
+	else dx = sqrt(b*b-4.0*a*c);
+	debug(fabs(b*b-4.0*a*c));
+	debug(b*b-4.0*a*c);
+	debug(dx);
 	return make_pair((-b + dx)/(2.0*a),(-b - dx)/(2.0*a));
 }
 pair<pto, pto> interCL(Circle c, line l){
@@ -134,15 +150,17 @@ pair<pto, pto> interCC(Circle c1, Circle c2){
 
 int main() {
   int n;
-  while(cin>>n){
-    vector<int> l (n);
+  //while(cin>>n){
+	{ cin>>n;
+		vector<int> l (n);
 		vector<int> sumas (n);
     int x,y;
 
     forn(i,n){
       cin>>l[i];
-
     }
+
+		sumas[n-1]=0;
 
 		dforn(i,n){
 			if (i) sumas[i-1]=sumas[i]+l[i];
@@ -150,8 +168,7 @@ int main() {
 
     cin>>x>>y;
 
-
-
+/*
 		vector<pto> res (n);
 
 		pto target, org;
@@ -171,13 +188,46 @@ int main() {
 
 			auto inter=interCC(inner, outer).fst;
 
-			res[i]=inter;
+			debug(inter.x);
+			debug(inter.y);
 
-			org=inter;
+			debug(inner.o.x);
+			debug(inner.o.y);
+			debug(outer.o.x);
+			debug(outer.o.y);
+			debug(outer.r);
+
+			if (inner.o.x == outer.o.x && inner.o.y == outer.o.y){
+				inter = {inner.o.x + inner.r, inner.o.y};
+			}else	if (inter.x != inter.x){
+
+				line l(inner.o, outer.o);
+
+				auto interInner = interCL(inner, l);
+				auto interOuter = interCL(outer, l);
+
+				debug(interInner.fst.x);
+				debug(interInner.fst.y);
+
+				auto minDist = min(min(dist(interInner.fst, interOuter.fst), dist(interInner.fst, interOuter.snd)),
+														min(dist(interInner.snd, interOuter.fst), dist(interInner.snd, interOuter.snd)));
+
+				if (minDist == dist(interInner.fst, interOuter.fst) || minDist == dist(interInner.fst, interOuter.snd)){
+					inter = interInner.fst;
+				}else{
+					inter = interInner.snd;
+				}
+
+			}
+
+			cerr<<endl;
+
+			org = inter;
+			res[i] = inter;
+
 
 		}
-
-		/*
+*/
     vector<pair<int, int> > radios (n);
     radios[0].fst=l[0];
     radios[0].second=l[0];
@@ -204,19 +254,26 @@ int main() {
 		punto.r=l[n-1];
 
 		if (punto.o.norm()<radios[n-1].fst ){
-			line lin((pto){0.0, 0.0}, punto.o);
 
-			Circle limit;
-			limit.o={0,0};
-			limit.r=radios[n-1].fst;
-
-			auto inter1=interCL(limit, lin);
-
-			if (dist(inter1.fst, punto.o)>dist(inter1.snd, punto.o)){
-				punto.o=inter1.snd;
+			if (punto.o.x == 0 && punto.o.y == 0){
+				punto.o.x+=punto.r;
 			}else{
-				punto.o=inter1.fst;
+
+				line lin((pto){0.0, 0.0}, punto.o);
+
+				Circle limit;
+				limit.o={0,0};
+				limit.r=radios[n-1].fst;
+
+				auto inter1=interCL(limit, lin);
+
+				if (dist(inter1.fst, punto.o)>dist(inter1.snd, punto.o)){
+					punto.o=inter1.snd;
+				}else{
+					punto.o=inter1.fst;
+				}
 			}
+
 
 		}else if ( (punto.o).norm()>radios[n-1].snd){
 			line lin((pto){0.0, 0.0}, punto.o);
@@ -236,67 +293,54 @@ int main() {
 		}
 
 
-		Circle limite;
-		limite.o={0.0, 0.0};
-		limite.r=radios[n-2].fst; //4
+		Circle limiteInt;
+		limiteInt.o={0.0, 0.0};
+		limiteInt.r=radios[n-2].fst; //4
+		res[n-1]=punto.o;
+		Circle limiteExt;
+		limiteExt.o={0.0, 0.0};
+		limiteExt.r=radios[n-2].snd; //4
 		res[n-1]=punto.o;
 		dforn(i,n-1){
-			auto inter=interCC(limite, punto).fst;
+			auto interExt=interCC(limiteExt, punto).fst;
+
+			debug(limiteExt.r);
+			debug(interExt.x);
+			debug(interExt.y);
+
+			auto interInt=interCC(limiteInt, punto).fst;
+
+			debug(limiteInt.r);
+			debug(interInt.x);
+			debug(interInt.y);
+
+			debug(punto.r);
+			debug(punto.o.x);
+			debug(punto.o.y);
 			//cerr<<"inters "<<inter.x<<' '<<inter.y<<endl;
-			if (inter.x!=inter.x){
+			if (interInt.x!=interInt.x && interExt.x!=interExt.x){
 
-				//cerr<<"norma "<<punto.o.norm()<<endl;
+			punto.o={punto.o.x+punto.r, punto.o.y};
 
-				if (punto.o.norm()<radios[i].fst ){
-					line lin((pto){0.0, 0.0}, punto.o);
-
-					Circle limit;
-					limit.o={0,0};
-					limit.r=radios[i].fst;
-
-					auto inter1=interCL(limit, lin);
-
-					if (dist(inter1.fst, punto.o)>dist(inter1.snd, punto.o)){
-						punto.o=inter1.snd;
-					}else{
-						punto.o=inter1.fst;
-					}
-
-				}else if ( (punto.o).norm()>radios[i].snd){
-					line lin((pto){0.0, 0.0}, punto.o);
-
-					Circle limit;
-					limit.o={0,0};
-					limit.r=radios[i].snd;
-
-					auto inter1=interCL(limit, lin);
-
-					if (dist(inter1.fst, punto.o)>dist(inter1.snd, punto.o)){
-						punto.o=inter1.snd;
-					}else{
-						punto.o=inter1.fst;
-					}
-
-				}else{
-
-					punto.o={punto.o.x+punto.r, punto.o.y};
-				}
-
-			res[i]=punto.o;
-
+			}else if (interExt.x != interExt.x){
+				punto.o=interInt;
 			}else{
-				res[i]=inter;
-				punto.o=inter;
+				punto.o=interExt;
 			}
 
+			res[i]=punto.o;
 			punto.r=l[i];
-			if (i) limite.r=radios[i-1].fst;
+			if (i) limiteInt.r=radios[i-1].fst;
+			if (i) limiteExt.r=radios[i-1].snd;
 
 		}
-		*/
+
 
 		forn(i,n){
-			cout<<setprecision(3)<<fixed<<res[i].x<<' '<<res[i].y<<endl;
+			//cout<<res[i].x<<' '<<res[i].y<<endl;
+
+			cerr<<"dist: "<< dist(res[i], (i?res[i-1]:pto(0,0)))<<endl;
+			cout<<setprecision(5)<<fixed<<res[i].x<<' '<<res[i].y<<endl;
 		}
 
   }
