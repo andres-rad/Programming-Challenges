@@ -67,7 +67,7 @@ int main() {
 			x-=rX;
 			y-=rY;
 			pto p = {x,y};
-
+			/*
 			if(x<0 && y>0) {
 				add.pb(p);
 			} else if(x>0 && y<0) {
@@ -77,8 +77,7 @@ int main() {
 			} else {
 				lower++;
 			}
-
-			/*
+			
 			if(x>0 && y>0) {
 				upper++;
 			} else if(x<0 && y<0) {
@@ -89,6 +88,27 @@ int main() {
 				add.pb(p);
 			}
 			*/
+			
+			
+			if(x != 0)
+			{
+				if(x > 0)
+				{
+					if(y <= 0) add.pb(p);
+					else upper++;
+				}
+				else
+				{
+					if(y >= 0) del.pb(p);
+					else lower++;
+				}
+			}
+			else
+			{
+				//x == 0
+				if(y > 0) del.pb(p);
+				else add.pb(p);
+			}
 		}
 		sort(add.begin(), add.end());
 		sort(del.begin(), del.end());
@@ -135,7 +155,7 @@ int main() {
 					curr = curr + countA - countD;
 					a++;
 					d++;
-			} else if((tint)((*d)^(*a)) > 0) {
+			} else if((tint)((*d)^(*a)) < 0) {
 				curr++;
 				maxC = max(maxC, curr);
 				a++;
