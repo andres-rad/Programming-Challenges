@@ -34,7 +34,7 @@ struct qentry {
     }else if (name != otro.name){
       return name > otro.name;
     }else{
-      return last < otro.last;
+      return last<otro.last;
     }
   }
 };
@@ -104,17 +104,18 @@ int main() {
           //debug(it->second);
           f-=it->second;
         }
-        qu.push({f, x, ent.ult});
+        qu.push({f, x, day});
       }
 
-    }else{
+    }else {
       //query tops
       int n;
       cin>>n;
+
       cin>>temp;
+      int lastF=-1;
       //debug(day);
       cout<<"<top "<<n<<">"<<endl;
-      int lastF=0;
       set<qentry> resave;
       while (!qu.empty() && (n>0 || lastF==qu.top().freq)){
         auto curr = qu.top();
@@ -124,13 +125,35 @@ int main() {
         //debug(m[curr.name].ult);
         //debug(curr.freq);
         lastF = curr.freq;
-        if (curr.last>day-7 && curr.freq!=0){ //me fijo que sea de los ultimos 7 dias
-          if (curr.last == m[curr.name].ult){
-            resave.insert(curr);
-            cout<<curr.name<<' '<<curr.freq<<endl;
-            n--;
+        int lastUpd = m[curr.name].ult;
+        if (lastUpd == day){
+            if (curr.last==lastUpd && curr.freq!=0){
+              resave.insert(curr);
+              cout<<curr.name<<' '<<curr.freq<<endl;
+              n--;
+            }
+
+        }else{
+
+          auto & ent = m[curr.name];
+          ent.ult = day;
+          auto it = ent.hist.end();
+          it--;
+          int f = it->second;
+          while (it != ent.hist.begin() && it->first > day - 7){
+            it--;
           }
+          //debug(f);
+          if (it->first <= day-7){
+            //debug(it->second);
+            f-=it->second;
+          }
+          qu.push({f, curr.name, day});
+
+
         }
+
+
       }
       for (auto x :resave){
         qu.push(x);
