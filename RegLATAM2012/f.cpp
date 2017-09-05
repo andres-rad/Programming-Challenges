@@ -15,7 +15,7 @@ int cl(int i){return (_cl[i] == -1 ? i : _cl[i] = cl(_cl[i]));}
 void join (int i, int j){ if (cl(i) != cl(j)) _cl[cl(i)] = cl(j);}
 void ini (int n) {_cl.clear(); _cl.insert(_cl.begin(), n, -1);}
 
-int id (int a, int b){return a+400*b;}
+int id (int a, int b){return a+603*b;}
 
 vector<vector<char> > sent;
 int main() {
@@ -39,14 +39,14 @@ int main() {
 		forn(i, 2*n ){
 			forn(j, 2*n + 1){
 				if ((i+j)%2){
-					if (i==0 || sent[i-1][j] == 'H')
+					if (j<2*n && (i==0 || sent[i-1][j] == 'H'))
 						join(id(i,j), id(i, j+1));
-					if (j==0 || sent[i][(j-1)] == 'V')
+					if (i<2*n - 1 && (j==0 || sent[i][(j-1)] == 'V'))
 						join(id(i,j), id(i+1, j));
 				}else{
-					if (sent[i][j] == 'H' or sent[i][j] == ' ')
+					if (j<2*n && (sent[i][j] == 'H' or sent[i][j] == ' '))
 						join(id(i,j), id(i, j+1));
-					if (sent[i][j] == 'V' or sent[i][j] == ' ')
+					if (i<2*n - 1 && (sent[i][j] == 'V' or sent[i][j] == ' '))
 						join(id(i,j), id(i+1, j));
 				}
 
