@@ -1,149 +1,193 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define tint long long
-#define forsn(i,s,n) for(tint i = (tint)(s); i < (tint)(n); i++)
-#define forn(i,n) forsn(i,0,n)
-#define dforsn(i,s,n) for(tint i = (tint)(n)-1; i >= (tint)(s); i--)
-#define dforn(i,n) dforsn(i,0,n)
+#define forsn(i, s, n) for (tint i = (tint)(s); i < (tint)(n); i++)
+#define forn(i, n) forsn(i, 0, n)
+#define dforsn(i, s, n) for (tint i = (tint)(n)-1; i >= (tint)(s); i--)
+#define dforn(i, n) dforsn(i, 0, n)
 #define fst first
 #define snd second
 #define debug(v) cerr << #v << " = " << (v) << endl;
 #define pb push_back
 
-struct node{
-	int dir;
-	vector<int> inv;
-	tint color;
-	int nivel;
+struct node {
+    int dir;
+    vector<int> inv;
+    tint color = -1;
+    int nivel;
 };
 
-tint ciclos;
-tint colores;
+struct color {
+    int ciclo = -1;
+    int dist;
+    int tamArbol;
+    int head;
+};
+
+struct ciclo {
+    int tam;
+};
 
 vector<node> gr;
 vector<int> vis;
 
-vector<int> ciclo; // les entro con el color
-vector<int> dist;
-vector<int> tam;
+vector<color> colores;
+vector<ciclo> ciclos;
 
-void markCicle(int curr, int count, int ciclo);
+// --------- LCA ------------------------------
 
-void findCicle(int s){
-	if (vis[gr[s].dir]){
-		markCicle(s, 0, ciclos++);
-	}else{
-		vis[s] = 1;
-		findCicle(gr[s].dir);
-	}
+vector<vector<int>> f;
+#define lg(x) (31-__builtin_clz(x))
+
+void buildLCA() {
+    int logn = lg(gr.size()) + 2;
+    f = vector<vector<int>>(gr.size(), vector<int>(logn, -1));
+
+    forn(v, gr.size()) {
+        int fa = gr[v].dir;
+        f[v][0] = gr[v].color == gr[fa].color ? fa : -1;
+    }
+
+    forn(k, logn-1)
+        forn(i, gr.size())
+            if(f[i][k] != -1)
+                f[i][k+1] = f[f[i][k]][k];
 }
 
-
-void alturas(int curr, int alt, int col){
-	gr[curr].nivel = alt;
-	gr[curr].color = col;
-
-	for(auto n:gr[curr].inv){
-		if (!gr[n].color) alturas(n, alt+1, col);
-	}
-
+int climb(int a, int d) {
+    if(!d) return a;
+    dforn(i, lg(gr[a].nivel)+1) {
+        if(1 << i <= d) {
+            a = f[a][i];
+            d -= 1 << i;
+        }
+    }
+    return a;
 }
 
-void markCicle(int curr, int count, int currciclo){
-	debug(curr);
-	debug(gr[curr].dir);
-	debug(gr[curr].color);
-	debug(currciclo);
-	if (gr[curr].color){
-		tam.pb(count );
-		return;
-	}
+int lca(int a, int b) {
+    if(gr[a].nivel < gr[b].nivel) {
+        swap(a,b);
+    }
+    a = climb(a, gr[a].nivel - gr[b].nivel);
 
-	gr[curr].color = colores++;
-	ciclo.pb(currciclo);
-	dist.pb(count);
+    if(a == b)
+        return b;
 
-	markCicle(gr[curr].dir, count+1, currciclo);
-	alturas(curr, 0, gr[curr].color);
+    dforn(i, lg(gr[a].nivel) + 1) {
+        if(f[a][i] != f[b][i])
+            a = f[a][i], b=f[b][i];
+    }
+
+    return f[a][0];
 }
 
+// --------------------------------------------
 
+void markCicle(int curr, int ciclo);
 
+void findCicle(int s) {
+    if (vis[gr[s].dir]) {
+        ciclos.pb({0});
+        markCicle(s, ciclos.size()-1);
+    } else {
+        vis[s] = 1;
+        findCicle(gr[s].dir);
+    }
+}
 
+void alturas(int curr, int alt, int col) {
+    gr[curr].nivel = alt;
+    gr[curr].color = col;
+    colores[col].tamArbol++;
+    vis[curr] = 1;
 
+    for (auto n : gr[curr].inv) {
+        if (gr[n].color == -1)
+            alturas(n, alt + 1, col);
+    }
+}
 
+void markCicle(int curr, int currciclo) {
+    if (gr[curr].color != -1) {
+        return;
+    }
 
+    colores.pb({});
+    color& c = colores[colores.size()-1];
+    c.ciclo = currciclo;
+    c.dist = ciclos[currciclo].tam;
+    c.tamArbol = 0;
+    c.head = curr;
+
+    ciclos[currciclo].tam++;
+
+    gr[curr].color = colores.size() - 1;
+
+    markCicle(gr[curr].dir, currciclo);
+    alturas(curr, 0, gr[curr].color);
+}
 
 int main() {
-	int n, q;
+    int n, q;
 
-	while (cin>>n){
-		ciclos = 1;
-		colores = 1;
-		tam = vector<int> (1, 0);
-		dist = vector<int> (1, 0);
-		ciclo = vector<int> (1, 0);
-		gr = vector<node> (n);
-		vis = vector<int> (n, 0);
+    while (cin >> n) {
+        ciclos.clear();
+        colores.clear();
 
-		forn(i,n){
-			int f;
-			cin>>f;
-			f--;
+        gr = vector<node>(n);
+        vis = vector<int>(n, 0);
 
-			gr[i].dir = f;
-			gr[f].inv.pb(i);
-		}
+        forn(i, n) {
+            int f;
+            cin >> f;
+            f--;
 
-		forn (i,n){
-			if (not vis[i])
-				findCicle(i);
-		}
+            gr[i].dir = f;
+            gr[f].inv.pb(i);
+        }
 
-		//vis = std::vector<int> (n, 0);
-		//forn(i,n){
-		//	if(gr[i].color)
-		//		alturas(i, 0, gr[i].color);
-		//}
-		int res;
+        forn(i, n) {
+            if (not vis[i])
+                findCicle(i);
+        }
 
-		cin>>q;
-		forn(i,q){
-			int a, b;
-			cin>>a>>b;
-			a--; b--;
+        buildLCA();
 
-			debug(a);
-			debug(b);
-			debug(gr[a].color);
-			debug(gr[a].color);
-			debug(gr[a].nivel);
-			debug(gr[b].nivel);
-			debug(ciclo[gr[b].color]);
-			debug(ciclo[gr[b].color]);
-			debug(dist[gr[a].color]);
-			debug(dist[gr[b].color]);
-			debug(tam[ciclo[gr[a].color]]);
-			if (gr[a].color == gr[b].color){
-				res = abs(gr[a].nivel - gr[b].nivel);
-			}else if(ciclo[gr[a].color] == ciclo[gr[b].color]){
-				res = gr[a].nivel + gr[b].nivel +
-				min(abs(dist[gr[a].color] - dist[gr[b].color]), tam[ciclo[gr[a].color]]- abs(dist[gr[a].color] - dist[gr[b].color]));
-			}else{
-				res = -1;
-			}
-		cout<<res<<endl;
+        int res;
 
-		}
+        cin >> q;
+        forn(i, q) {
+            int a, b;
+            cin >> a >> b;
+            a--;
+            b--;
 
+            /*
+            debug(a);
+            debug(b);
+            debug(gr[a].color);
+            debug(gr[a].color);
+            debug(gr[a].nivel);
+            debug(gr[b].nivel);
+            */
 
+            if (gr[a].color == gr[b].color) {
+                int ca = lca(a,b);
+                res = gr[a].nivel + gr[b].nivel - gr[ca].nivel * 2;
 
+            } else if (colores[gr[a].color].ciclo == colores[gr[b].color].ciclo) {
+                int fwd = abs(colores[gr[a].color].dist - colores[gr[b].color].dist);
+                int bwd = ciclos[colores[gr[a].color].ciclo].tam -
+                              abs(colores[gr[a].color].dist - colores[gr[b].color].dist);
 
+                res = gr[a].nivel + gr[b].nivel + min(fwd, bwd);
+            } else {
+                res = -1;
+            }
+            cout << res << endl;
+        }
+    }
 
-
-
-	}
-
-
-	return 0;
+    return 0;
 }
