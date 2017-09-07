@@ -11,7 +11,7 @@ using namespace std;
 #define pb push_back
 
 struct node{
-	int dir; 
+	int dir;
 	vector<int> inv;
 	tint color;
 	int nivel;
@@ -30,16 +30,12 @@ vector<int> tam;
 void markCicle(int curr, int count, int ciclo);
 
 void findCicle(int s){
-
 	if (vis[gr[s].dir]){
 		markCicle(s, 0, ciclos++);
 	}else{
 		vis[s] = 1;
 		findCicle(gr[s].dir);
 	}
-	
-
-
 }
 
 
@@ -54,17 +50,21 @@ void alturas(int curr, int alt, int col){
 }
 
 void markCicle(int curr, int count, int currciclo){
-	if (gr[curr].color){ 
-		tam.pb(count + 1);
+	debug(curr);
+	debug(gr[curr].dir);
+	debug(gr[curr].color);
+	debug(currciclo);
+	if (gr[curr].color){
+		tam.pb(count );
 		return;
 	}
 
 	gr[curr].color = colores++;
 	ciclo.pb(currciclo);
 	dist.pb(count);
-	alturas(curr, 0, gr[curr].color);
 
 	markCicle(gr[curr].dir, count+1, currciclo);
+	alturas(curr, 0, gr[curr].color);
 }
 
 
@@ -105,7 +105,7 @@ int main() {
 		//	if(gr[i].color)
 		//		alturas(i, 0, gr[i].color);
 		//}
-			int res;
+		int res;
 
 		cin>>q;
 		forn(i,q){
@@ -116,13 +116,18 @@ int main() {
 			debug(a);
 			debug(b);
 			debug(gr[a].color);
-			debug(gr[b].color);
+			debug(gr[a].color);
 			debug(gr[a].nivel);
 			debug(gr[b].nivel);
+			debug(ciclo[gr[b].color]);
+			debug(ciclo[gr[b].color]);
+			debug(dist[gr[a].color]);
+			debug(dist[gr[b].color]);
+			debug(tam[ciclo[gr[a].color]]);
 			if (gr[a].color == gr[b].color){
 				res = abs(gr[a].nivel - gr[b].nivel);
 			}else if(ciclo[gr[a].color] == ciclo[gr[b].color]){
-				res = gr[a].nivel + gr[b].nivel + 
+				res = gr[a].nivel + gr[b].nivel +
 				min(abs(dist[gr[a].color] - dist[gr[b].color]), tam[ciclo[gr[a].color]]- abs(dist[gr[a].color] - dist[gr[b].color]));
 			}else{
 				res = -1;
