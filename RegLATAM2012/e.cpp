@@ -8,14 +8,14 @@ using namespace std;
 #define fst first
 #define snd second
 #define febug(f, v) //cerr<<f<< ' '<<#v << " = "<< (v) <<endl;
-#define debug(v) 	cerr << #v << " = " << (v) << endl;
+#define debug(v) 	//cerr << #v << " = " << (v) << endl;
 #define pb push_back
 #define mp make_pair
 
 int w,d,a,k;
 vector<tint> p1, p2, q1, q2;
 
-#define BINS 1250000
+#define BINS 2700
 
 vector<double> memo1, memo2;
 inline double eval(int a, double x){
@@ -57,32 +57,33 @@ double tryd(double d){
 unordered_map<double, double> mm [2];
 
 double f(double x, double d, int i){
-	auto it1 = mm[i].find(x);
-	if (it1 == mm[i].end() ){
-		it1 = mm[i].insert(mp(x, eval(i, x))).fst;
+	if (mm[i][x] == 0){
+		mm[i][x]= eval(i, x);
 	}
 
-	double top = max(d, it1->second);
-	return top;
+	return min(d, mm[i][x]);
 }
 
 double integral(double a, double b, int n, double d, int j){
-	double area=0, h=(b-a)/n, fa= f(a, d, j), fb;
+	double area=0, h=(b-a)/n, fa= f(0., d, j), fb;
 	forn(i,n){
 		fb = f(a+h*(i+1), d, j);
 		area += fa + fb + 4*(f(a+h*(i+0.5), d, j));
+		fa=fb;
 		//cerr<<i<<endl;
 	}
-	return area*h/6.;
+	return (area*h)/6.;
 }
 
+
 int main() {
-	memo1 = memo2 = vector<double> (BINS);
+//	memo1 = memo2 = vector<double> (BINS);
 
 	while(cin>>w){
 		cin>>d>>a>>k;
 		mm[0].clear();
 		mm[1].clear();
+
 
 		//vector<tint> p1, p2, q1, q2;
 
@@ -93,7 +94,7 @@ int main() {
 		forn(i,k+1){
 			tint temp;
 			cin>>temp;
-			p1.pb(temp);
+			p1.pb(-temp);
 		}
 		forn(i,k+1){
 			tint temp;
@@ -103,7 +104,7 @@ int main() {
 		forn(i,k+1){
 			tint temp;
 			cin>>temp;
-			p2.pb(temp);
+			p2.pb(-temp);
 		}
 		forn(i,k+1){
 			tint temp;
@@ -118,9 +119,10 @@ int main() {
 			memo2[i] = eval(0, i*bin);
 		}
 */
-		debug(integral(0, w, BINS, -5.51389 , 0) - integral(0, w, BINS, -5.51389 , 1));
-		double lo = -d;
-		double hi = 0;
+		debug(integral(0, w, BINS, 5.51 , 0));// -
+		debug(integral(0, w, BINS, 5.51 , 1));
+		double lo = 0;
+		double hi = d;
 
 		while (hi-lo>1e-6){
 			double m = (hi+lo)/2;
@@ -130,14 +132,14 @@ int main() {
 
 			double area = integral(0, w, BINS, m, 0) -integral(0, w, BINS, m, 1);
 			debug(area);
-			if (area > a){
+			if (area  < a){
 				lo = m;
 			}else{
 				hi = m;
 			}
 		}
 
-		cout<<setprecision(5)<<fixed<<-hi<<endl;
+		cout<<setprecision(5)<<fixed<<hi<<endl;
 	}
 	return 0;
 }
