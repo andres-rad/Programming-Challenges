@@ -77,6 +77,7 @@ int main() {
         double res = 0;
         forn(i,n) {
             // sumar el tiempo de los segmentos
+            
         }
 
         if(not error)
