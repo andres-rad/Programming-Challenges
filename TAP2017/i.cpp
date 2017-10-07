@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define tint long long 
+#define tint long long
 #define ii pair<tint,tint>
 #define forsn(i,s,n) for(tint i = (tint)(s); i < (tint)(n); i++)
 #define forn(i,n) forsn(i,0,n)
@@ -20,7 +20,7 @@ struct pto{
 	pto operator-(pto a ) { return pto(x-a.x, y-a.y);}
 };
 
-#define eps 1e-5
+#define eps 1e-6
 	double angle(pto a, pto o, pto b){
 		pto oa = a-o;
 		pto ob = b-o;
@@ -84,9 +84,28 @@ int main() {
 		double cte = (dist(v1[d], v1[(d+1)%n]))/(dist(v2[0], v2[1]));
 		//debug(cte);
 		forn(i, n){
-			cur = cur && fabs(a1[(i+d)%n] - a2[i]) < eps; 
 			cur = cur && fabs(cte - (dist(v1[(i+d)%n], v1[(i+d+1)%n]))/(dist(v2[(i)], v2[(i+1)%n]))) < eps;
-			cur = cur && fabs(cte - (dist(v1[(i+d)%n], v1[(i+d-1+n)%n]))/(dist(v2[(i)], v2[(i-1+n)%n]))) < eps;
+
+			//cur = cur && fabs(a1[(i+d)%n] - a2[i]) < eps;
+			//cur = cur && fabs(cte - (dist(v1[(i+d)%n], v1[(i+d+1)%n]))/(dist(v2[(i)], v2[(i+1)%n]))) < eps;
+			//cur = cur && fabs(cte - (dist(v1[(i+d)%n], v1[(i+d-1+n)%n]))/(dist(v2[(i)], v2[(i-1+n)%n]))) < eps;
+			//debug(fabs(cte - (dist(v1[(i+d)%n], v1[(i+d+1)%n]))/(dist(v2[(i)], v2[(i+1)%n]))));
+			//debug(fabs(cte - (dist(v1[(i+d)%n], v1[(i+d-1+n)%n]))/(dist(v2[(i)], v2[(i-1+n)%n]))));
+
+		}
+
+		res = res || cur;
+	}
+
+
+	forn (d, n){
+		bool cur = true;
+		double cte = (dist(v1[d], v1[(d-1+n)%n]))/(dist(v2[0], v2[1]));
+		//debug(cte);
+		forn(i, n){
+			cur = cur && fabs(a1[(i+d)%n] - a2[i]) < eps;
+			cur = cur && fabs(cte - (dist(v1[(i+d)%n], v1[(i+d-1+n)%n]))/(dist(v2[(i)], v2[(i+1)%n]))) < eps;
+			cur = cur && fabs(cte - (dist(v1[(i+d)%n], v1[(i+d+1+n)%n]))/(dist(v2[(i)], v2[(i-1+n)%n]))) < eps;
 			//debug(fabs(cte - (dist(v1[(i+d)%n], v1[(i+d+1)%n]))/(dist(v2[(i)], v2[(i+1)%n]))));
 			//debug(fabs(cte - (dist(v1[(i+d)%n], v1[(i+d-1+n)%n]))/(dist(v2[(i)], v2[(i-1+n)%n]))));
 
