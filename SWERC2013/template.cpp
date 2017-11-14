@@ -11,6 +11,7 @@ using namespace std;
 #define fst first
 #define snd second
 #define INF 1e9
+#define debug(a) cerr<< #a <<": "<<a<<endl;
 typedef long long ll;
 typedef pair<int,int> ii;
 typedef double tipo;

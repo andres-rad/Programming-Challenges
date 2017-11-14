@@ -111,7 +111,7 @@ int main() {
       //query tops
       int n;
       cin>>n;
- 
+
       cin>>temp;
       int lastF=-1;
       //debug(day);
@@ -132,7 +132,7 @@ int main() {
               cout<<curr.name<<' '<<curr.freq<<endl;
               n--;
             }
-          
+
         }else{
 
           auto & ent = m[curr.name];
@@ -153,7 +153,7 @@ int main() {
 
         }
 
-        
+
       }
       for (auto x :resave){
         qu.push(x);
