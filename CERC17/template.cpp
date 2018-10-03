@@ -9,7 +9,6 @@ using namespace std;
 #define snd second
 typedef long long tint;
 
-
 int main() {
 	int n;
 
