@@ -18,7 +18,7 @@ typedef long long tint;
 
 
 
-
+#define fpos adla
 
 /* Suffix tree sacado de aca
 	http://codeforces.com/blog/entry/16780
@@ -27,6 +27,145 @@ typedef long long tint;
 #include <bits/stdc++.h>
 
 using namespace std;
+tint res;
+
+struct suffT{
+    int inf;
+    int maxn;
+    string orig;
+    string s;
+    vector<map<int, int> > to;
+    vector<int> len, fpos, link;
+    int node, pos, sz, n;
+
+    suffT(string k){
+        debug("CREANDO");
+        inf = 1000000000;
+        orig = k;
+        orig += '#'; //Caracter que no aparezca
+        s = orig;
+        maxn = 4*s.size() + 3;
+        to = vector<map<int, int> > (maxn);
+        len = vector<int> (maxn, 0);
+        fpos = vector<int> (maxn, 0);
+        link = vector<int> (maxn, 0);
+        node = pos = n = 0;
+        len[0] = 1e9;
+        sz = 1;
+
+        for(int i = 0; i < s.size(); i++){
+            debug(i);
+            add_letter(s[i]);
+        }
+        debug("CREADO");
+    }
+
+    int make_node(int _pos, int _len){
+        fpos[sz] = _pos;
+        len [sz] = _len;
+        return sz++;
+    }
+
+    void go_edge(){
+        while(pos > len[to[node][s[n - pos]]]){
+            debug(s[n - pos]);
+            node = to[node][s[n - pos]];
+            pos -= len[node];
+        }
+    }
+
+    void add_letter(int c){
+        s[n++] = c;
+        pos++;
+        int last = 0;
+        while(pos > 0){
+            go_edge();
+            int edge = s[n - pos];
+            int &v = to[node][edge];
+            int t = s[fpos[v] + pos - 1];
+            if(v == 0){
+                v = make_node(n - pos, inf);
+                link[last] = node;
+                last = 0;
+            }else if(t == c){
+                link[last] = node;
+                return;
+            }else{
+                int u = make_node(fpos[v], pos - 1);
+                debug(u);
+                debug(pos);
+                debug(node);
+                to[u][c] = make_node(n - 1, inf);
+                to[u][t] = v;
+                fpos[v] += pos - 1;
+                len [v] -= pos - 1;
+                v = u;
+                link[last] = u;
+                last = u;
+            }
+            if(node == 0)
+                pos--;
+            else
+                node = link[node];
+        }
+    }
+
+
+    int search(string k){
+    	int cur = 0;
+    	bool encontrado = true;
+    	int visto = 0;
+    	while (encontrado and visto < k.size()){
+    		if (encontrado = encontrado and to[cur].find(k[visto]) != to[cur].end()){
+    			cur = to[cur][k[visto]];
+    			forsn(i, fpos[cur], len[cur] + fpos[cur]){
+    				if (visto == k.size()) return true;
+    				if (k[visto++] != s[i]) return false;
+    			}
+    		}
+    	}
+    	return false;
+    }
+
+    pair<int, int> dfs(int cur = 0, int acum = 0){
+        //debug(cur);
+        //debug(len[cur]);
+        if (len[cur] > maxn and cur != 0){
+            pair<int, int> resp {1, 0};
+            return resp;
+        }
+
+    	int hojas = 0;
+        int contados = 0;
+    	bool todosHojas = true;
+    	for(const auto&  n : to[cur]){
+            //debug((char)n.fst);
+    		pair<int, int> next = dfs(n.snd, (len[n.snd] > maxn ? s.size() - 1 : acum + len[n.snd]));//o len[n.snd]
+
+    		todosHojas = todosHojas && (next.fst == 1);
+    		hojas += next.fst;
+            contados += next.snd;
+    	}
+    	//if (hojas == 0) hojas++;
+        /*
+        debug(cur);
+        debug(hojas);
+        debug(todosHojas);
+        debug(acum);
+        */
+    	if (hojas > 1 and todosHojas){
+    		res += (tint)acum;
+            contados++;
+    	}else if (contados > 1){
+            res -= (tint)((contados - 1)*acum);
+            contados = 1;
+        }
+    	return make_pair(hojas, contados);
+    }
+
+};
+
+/*
 
 
 #define fpos adla
@@ -109,114 +248,23 @@ void add_letter(int c)
     }
 }
 
-int search(string k){
-	int cur = 0;
-	bool encontrado = true;
-	int visto = 0;
-	while (encontrado and visto < k.size()){
-		if (encontrado = encontrado and to[cur].find(k[visto]) != to[cur].end()){
-			cur = to[cur][k[visto]];
-			forsn(i, fpos[cur], len[cur] + fpos[cur]){
-				if (visto == k.size()) return cur;
-				if (k[visto++] != s[i]) return -1;
-			}
-			/*
-			if (k.compare(visto, len[cur], s, fpos[cur], len[cur]) != 0){
-				return false;
-			}
-			visto += len[cur];
-			*/
-		}
-	}
-	return cur;
-}
-/*
-int main()
-{
-    len[0] = inf;
-    string s;
-    cin >> s;
-    int ans = 0;
-    for(int i = 0; i < s.size(); i++)
-        add_letter(s[i]);
-    for(int i = 1; i < sz; i++)
-        ans += min((int)s.size() - fpos[i], len[i]);
-    cout << ans << "\n";
-
-	debug(search("aaa"));
-	forn(i, 13){
-		debug(i);
-		debug(to[i]['a']);
-		debug(len[i]);
-		debug(fpos[i]);
-
-	}
-}
 */
 
-tint res;
-string ss;
 
 
-pair<int, int> dfs(int cur = 0, int acum = 0){
-    //debug(cur);
-    //debug(len[cur]);
-    if (len[cur] > maxn and cur != 0){
-        pair<int, int> res {1, 0};
-        return res;
-    }
-
-	int hojas = 0;
-    int contados = 0;
-	bool todosHojas = true;
-	for(const auto&  n : to[cur]){
-        //debug((char)n.fst);
-		pair<int, int> next = dfs(n.snd, (len[n.snd] > maxn ? ss.size() - 1 : acum + len[n.snd]));//o len[n.snd]
-
-		todosHojas = todosHojas && (next.fst == 1);
-		hojas += next.fst;
-        contados += next.snd;
-	}
-	//if (hojas == 0) hojas++;
-    /*
-    debug(cur);
-    debug(hojas);
-    debug(todosHojas);
-    debug(acum);
-    */
-	if (hojas > 1 and todosHojas){
-		res += acum;
-        contados++;
-	}else if (contados > 1){
-        res -= (contados - 1)*acum;
-        contados = 1;
-    }
-	return make_pair(hojas, contados);
-}
 
 int main() {
 	ios::sync_with_stdio(0); cin.tie(0);
 	//string disk;
-    //string ss;
+    string ss;
 	while (cin >> ss){
 		if (ss == "*") break;
-        ss += '#';
+
+        suffT st (ss);
+
 		res = 0;
-		init();
-        for(int i = 0; i < ss.size(); i++){
-            //debug(ss[i]);
-            add_letter(ss[i]);
-        }
 
-
-		/*
-		forn(i, 6){
-			debug(i);
-			debug(to[i].size());
-			debug(len[to[i]['a']]);
-		}*/
-
-		dfs();
+		st.dfs();
         /*
         forn(i, 25){
     		debug(i);
