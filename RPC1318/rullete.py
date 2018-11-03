@@ -68,7 +68,7 @@ def sumDivs(v):
 	res = 0
 	for i in range(1,v+1):
 		if v % i == 0:
-			res += 1
+			res += i
 	return res
 
 #1
@@ -163,7 +163,7 @@ def p6():
 	global suits
 	global lastRule
 	if rC['7'] == 4:
-		val -= 112 ## <<<<<<< Esto es 11 2 ???
+		val -= 11*11 ## <<<<<<< Esto es 11 2 ???
 		changes += 1
 		debug("6 val", val)
 		lastRule = p6
@@ -253,10 +253,11 @@ def p10():
 			straight = True
 			break
 	if straight:
-		val += rC['A']
+		val += rC['A'] * 5
 		changes += 1
 		debug("10 val", val)
-		lastRule = p10
+		if rc['A'] != 0:
+			lastRule = p10
 
 #11
 def p11():
@@ -269,12 +270,14 @@ def p11():
 	global lastRule
 	if changes > 8:
 		tmp = val
+		if tmp != 0:
+			lastRule = p11
 		while tmp > 0:
 			val += tmp % 2
 			tmp //= 2
 		changes += 1
 		debug("11 val", val)
-		lastRule = p11
+		# lastRule = p11
 
 #12
 def p12():
@@ -300,7 +303,7 @@ def p13():
 	global suits
 	global lastRule
 	if rC['2'] >= 1:
-		val *= 2
+		val += abs(val)
 		changes += 1
 		debug("13 val", val)
 		lastRule = p13
