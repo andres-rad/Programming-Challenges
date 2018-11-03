@@ -25,7 +25,7 @@ int main() {
 	debug(mod);
 	int n, k; cin >> n >> k;
 	string t; cin >> t;
-	vector<vector<vector<tint>>> dp (n+1, vector<vector<tint>> (k+2, vector<tint> (2, 0)));
+	vector<vector<vector<tint>>> dp (n+3, vector<vector<tint>> (k+10, vector<tint> (2, 0)));
 
 	reverse(t.begin(), t.end());
 	if (t[0] == '0'){
@@ -53,9 +53,9 @@ int main() {
 		}		
 
 	}
-	debug(dp[n-1][k+1][0]);
-	debug(dp[n-1][k][1]);
-	debug(dp[n-1][k+1][1]);
-	cout << dp[n-1][k+1][0] + dp[n-1][k][1] << endl;
+	// debug(dp[n-1][k+1][0]);
+	// debug(dp[n-1][k][1]);
+	// debug(dp[n-1][k+1][1]);
+	cout << (dp[n-1][k+1][0] + dp[n-1][k][1])%mod << endl;
 	return 0;
 }
