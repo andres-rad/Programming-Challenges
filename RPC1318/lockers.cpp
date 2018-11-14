@@ -77,14 +77,20 @@ int main() {
             if(nxtIt != ends.begin()) {
                 nxtIt--;
                 tint nxt = *nxtIt;
-                toMark = max((tint)0, k - (nxt - pt));
-                pt = nxt % no;
-
-                if(toMark > 0) {
-                    ends.erase(nxtIt);
+                if (nxt < pt){
+                    toMark = 0;
+                }else{
+                    toMark = max((tint)0, k - (nxt - pt));
+                    pt = nxt % no;
+    
+                    if(toMark > 0) {
+                        ends.erase(nxtIt);
+                    }
                 }
             }
         }
+                    debug(pt);
+                    debug(toMark);
 
         for(; toMark > 0; toMark--) {
             if (marked[pt]) {
