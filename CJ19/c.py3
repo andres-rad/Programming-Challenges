@@ -16,14 +16,17 @@ while t > 0:
             if ls[x] != ls[y]:
                 
                 primo = gcd(ls[x], ls[y])
-                
+                # print(type(primo))
                 if primo != 1:
                     primos[primo] = True
+                # else:
+                    # print(l[x], l[y])
+                    # x = 1/0
     otros = {k:True for k in primos.keys()}
     for p in primos:
-        for l in ls:
-            if l%p == 0 and l//p != 1:
-                otros[l//p] = True
+        for ll in ls:
+            if ll%p == 0 and ll//p != 1:
+                otros[ll//p] = True
         # print(p)
     # print(len(otros))
     beg = 'A'
@@ -39,9 +42,13 @@ while t > 0:
         x = 1/0
     while len(primos) != 26:
         x = 1/0
-    for p, l in primos.items():
+    for p, _ in primos.items():
         if ls[0] % p == 0:
             divisoresPrim.append(p)
+    while len(divisoresPrim) > 2:
+        x = 1/0
+    while len(divisoresPrim) == 0:
+        x = 1/0
     ans = []
     for d in divisoresPrim:
         nextP = d
@@ -54,10 +61,13 @@ while t > 0:
                 ans = []
                 break
             nextP = li//nextP
-        ans.append(nextP)
         if ans:
+            ans.append(nextP)
             break
 
+    # print(l)    
+    while len(ans) != l+1:
+        x = 1/0
     # print("".join(map(lambda p : primos[p]  ,ans)))
                 
     
